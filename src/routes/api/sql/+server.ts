@@ -12,12 +12,7 @@ export const POST: RequestHandler = async ({ request, locals: { db } }) => {
 
 	const result = await db.query(query);
 
-	return json(
-		{
-			data: result
-		},
-		{
-			status: 200
-		}
-	);
+	return json(result, {
+		status: 200
+	});
 };

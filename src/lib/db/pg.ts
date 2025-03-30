@@ -1,43 +1,40 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { sql, SQL, type SQLQuery } from "bun";
-import type { DBConnection, DBSchema, TableInfo, ColumnInfo } from "./types";
+import { sql, SQL, type SQLQuery } from 'bun';
+import type { DBConnection, DBSchema, TableInfo, ColumnInfo } from './types';
 
 // Define QueryResult type that wasn't in the original types
-export interface QueryResult {
-  rows?: any[];
-  [key: string]: any;
-}
+
 
 export class PostgresConnection implements DBConnection {
-  private db: SQL;
+	private db: SQL;
 
-  constructor(connectionUrl?: string) {
-    this.db = new SQL({
-      url: connectionUrl || process.env.PG_URL,
-      max: 20,
-      idleTimeout: 30,
-      connectionTimeout: 30,
-      onconnect: () => console.log("Connected to PostgreSQL database"),
-      onclose: () => console.log("PostgreSQL connection closed"),
-    });
-  }
+	constructor(connectionUrl?: string) {
+		this.db = new SQL({
+			url: connectionUrl || process.env.PG_URL,
+			max: 20,
+			idleTimeout: 30,
+			connectionTimeout: 30,
+			onconnect: () => console.log('Connected to PostgreSQL database'),
+			onclose: () => console.log('PostgreSQL connection closed')
+		});
+	}
 
-  async query(sql_statment: string): Promise<QueryResult> {
-    try {
-      const result = await this.db.unsafe(sql_statment);
-      return { rows: result };
-    } catch (error) {
-      console.error("PostgreSQL query error:", error);
-      throw error;
-    }
-  }
+	async query(sql_statment: string): Promise<any> {
+		try {
+			const result = await this.db.unsafe(sql_statment);
+			return result;
+		} catch (error) {
+			console.error('PostgreSQL query error:', error);
+			throw error;
+		}
+	}
 
-  async getSchema(): Promise<DBSchema> {
-    // Simplified query that doesn't require custom functions
+	async getSchema(): Promise<DBSchema> {
+		// Simplified query that doesn't require custom functions
 
-    try {
-      const result = await this.db`
+		try {
+			const result = await this.db`
       SELECT 
         t.table_schema,
         t.table_name,
@@ -60,28 +57,28 @@ export class PostgresConnection implements DBConnection {
       ORDER BY t.table_schema, t.table_name;
     `;
 
-      console.log(result);
-      // Transform the result into DBSchema format
-      const tables: TableInfo[] =
-        result.map((row: any) => {
-          const columns: ColumnInfo[] = row.columns;
-          return {
-            table_name: row.table_name,
-            schema_name: row.table_schema,
-            columns,
-            // Simple placeholder for create_statement
-            create_statement: `CREATE TABLE ${row.table_schema}.${row.table_name} (...)`,
-          };
-        }) ?? [];
-      console.log(tables);
-      return { tables };
-    } catch (error) {
-      console.error("Failed to get PostgreSQL schema:", error);
-      throw error;
-    }
-  }
+			console.log(result);
+			// Transform the result into DBSchema format
+			const tables: TableInfo[] =
+				result.map((row: any) => {
+					const columns: ColumnInfo[] = row.columns;
+					return {
+						table_name: row.table_name,
+						schema_name: row.table_schema,
+						columns,
+						// Simple placeholder for create_statement
+						create_statement: `CREATE TABLE ${row.table_schema}.${row.table_name} (...)`
+					};
+				}) ?? [];
+			console.log(tables);
+			return { tables };
+		} catch (error) {
+			console.error('Failed to get PostgreSQL schema:', error);
+			throw error;
+		}
+	}
 
-  async close(): Promise<void> {
-    await this.db.close();
-  }
+	async close(): Promise<void> {
+		await this.db.close();
+	}
 }

@@ -3,11 +3,6 @@ import { Database } from "bun:sqlite";
 import type { DBConnection, DBSchema, TableInfo, ColumnInfo } from "./types";
 
 // Define QueryResult type that wasn't in the original types
-export interface QueryResult {
-  rows?: any[];
-  all?: () => any[];
-  [key: string]: any;
-}
 
 export class SQLiteConnection implements DBConnection {
   private db: Database;
@@ -19,17 +14,12 @@ export class SQLiteConnection implements DBConnection {
     });
   }
   
-  async query(sql: string ): Promise<QueryResult> {
+  async query(sql: string ): Promise<any> {
     try {
 
       const stmt = this.db.query(sql);
-      return {
-        rows: stmt.all(),
-        all: () => stmt.all(),
-        get: () => stmt.get(),
-        run: () => stmt.run(),
-        finalize: () => stmt.finalize(),
-      };
+      return stmt.all();
+    
     } catch (error) {
       console.error("SQLite query error:", error);
       throw error;

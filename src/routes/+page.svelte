@@ -1,44 +1,103 @@
-<script>
+<script lang="ts">
+	import SvelteMarkdown from '@humanspeak/svelte-markdown';
 	import Code from '$lib/Code.svelte';
 	import { Chat } from '@ai-sdk/svelte';
-
+	
 	const chat = new Chat();
-	import SvelteMarkdown from '@humanspeak/svelte-markdown';
-</script>
-
-<main class="mx-auto min-h-screen max-w-2xl bg-gray-50 p-4">
-	<ul class="mb-6 space-y-4">
-		{#each chat.messages as message}
-			<li
-				class={`rounded-lg p-4 ${
-					message.role === 'user'
-						? 'ml-auto max-w-[80%] bg-blue-500 text-white'
-						: 'mr-auto max-w-[80%] bg-gray-200 text-gray-800'
-				}`}
-			>
-				<span class="font-semibold">{message.role}:</span>
-				<span class="break-words">
+	
+	// For auto-scrolling to bottom of chat
+	let chatContainer: HTMLDivElement | undefined = $state();
+	
+	function scrollToBottom() {
+	  if (!chatContainer) return;
+	  chatContainer.scrollTop = chatContainer.scrollHeight;
+	}
+	
+	// // Auto-scroll when new messages arrive
+	// $effect(() => {
+	//   if (chat.messages.length > 0) {
+	// 	setTimeout(scrollToBottom, 100);
+	//   }
+	// });
+  </script>
+  
+  <main class="flex flex-col h-screen bg-base-200 p-4 md:p-6">
+	<div class="flex-1 overflow-hidden flex flex-col bg-base-100 rounded-lg shadow-lg max-w-4xl mx-auto w-full">
+	  <!-- Chat header -->
+	  <div class="border-b p-4 bg-base-100 rounded-t-lg shadow-sm">
+		<h1 class="text-xl font-semibold">Chatbot Assistant</h1>
+		<p class="text-sm opacity-70">Ask me anything!</p>
+	  </div>
+	  
+	  <!-- Chat message area -->
+	  <div class="flex-1 overflow-y-auto p-4 space-y-4" bind:this={chatContainer}>
+		{#if chat.messages.length === 0}
+		  <div class="flex items-center justify-center h-full">
+			<div class="text-center opacity-70">
+			  <p class="mb-2">No messages yet</p>
+			  <p class="text-sm">Type something below to start the conversation</p>
+			</div>
+		  </div>
+		{:else}
+		  {#each chat.messages as message}
+			<div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
+			  <div class="max-w-3/4 {message.role === 'user' 
+				? 'bg-primary text-primary-content rounded-tl-lg rounded-tr-lg rounded-bl-lg' 
+				: 'bg-base-200 text-base-content rounded-tl-lg rounded-tr-lg rounded-br-lg'} p-3 shadow-sm">
+				
+				{#if message.role === 'assistant'}
+				  <div class="prose prose-sm max-w-none">
 					<SvelteMarkdown
-						source={message.content}
-						renderers={{
-							code: Code
-						}}
+					  source={message.content}
+					  renderers={{
+						code: Code
+					  }}
 					/>
-				</span>
-			</li>
-		{/each}
-	</ul>
-	<form on:submit={chat.handleSubmit} class="sticky bottom-4 flex gap-2">
-		<input
-			bind:value={chat.input}
-			class="flex-1 rounded-lg border border-gray-300 p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-			placeholder="Type your message..."
-		/>
-		<button
-			type="submit"
-			class="rounded-lg bg-blue-500 px-6 py-3 text-white transition-colors hover:bg-blue-600"
-		>
-			Send
-		</button>
-	</form>
-</main>
+				  </div>
+				{:else}
+				  <p class="whitespace-pre-wrap break-words">{message.content}</p>
+				{/if}
+			  </div>
+			</div>
+		  {/each}
+		{/if}
+	  </div>
+	  
+	  <!-- Input area -->
+	  <div class="border-t p-4 bg-base-100 rounded-b-lg">
+		<form onsubmit={chat.handleSubmit} class="flex space-x-2">
+		  <input 
+			bind:value={chat.input} 
+			placeholder="Type your message here..." 
+			class="input input-bordered flex-1 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+		  />
+		  <button 
+			type="submit" 
+			class="btn btn-primary btn-circle text-primary-content flex items-center justify-center"
+			disabled={!chat.input || chat.status === "streaming"}
+		  >
+			{#if chat.status === 'streaming'}
+			  <span class="loading loading-spinner loading-sm"></span>
+			{:else}
+			  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+			  </svg>
+			{/if}
+		  </button>
+		</form>
+	  </div>
+	</div>
+  </main>
+  
+  <style>
+	/* Hide scrollbar for Chrome, Safari and Opera */
+	.overflow-y-auto::-webkit-scrollbar {
+	  display: none;
+	}
+	
+	/* Hide scrollbar for IE, Edge and Firefox */
+	.overflow-y-auto {
+	  -ms-overflow-style: none;  /* IE and Edge */
+	  scrollbar-width: none;  /* Firefox */
+	}
+  </style>

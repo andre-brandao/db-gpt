@@ -41,6 +41,7 @@
 		"zod": "^3.24.2"
 	},
 	"dependencies": {
-		"@humanspeak/svelte-markdown": "^0.7.19"
+		"@humanspeak/svelte-markdown": "^0.7.19",
+		"daisyui": "^5.0.9"
 	}
 }
