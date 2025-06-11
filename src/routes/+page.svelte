@@ -25,7 +25,7 @@
 	<div class="flex-1 overflow-hidden flex flex-col bg-base-100 rounded-lg shadow-lg max-w-4xl mx-auto w-full">
 	  <!-- Chat header -->
 	  <div class="border-b p-4 bg-base-100 rounded-t-lg shadow-sm">
-		<h1 class="text-xl font-semibold">Chatbot Assistant</h1>
+		<h1 class="text-xl font-semibold">DB GPT</h1>
 		<p class="text-sm opacity-70">Ask me anything!</p>
 	  </div>
 	  
