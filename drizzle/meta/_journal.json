@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1750080292120,
+      "tag": "0000_yielding_ender_wiggin",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1750096345984,
+      "tag": "0001_regular_gargoyle",
+      "breakpoints": true
+    }
+  ]
+}
