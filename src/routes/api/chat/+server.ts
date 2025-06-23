@@ -14,7 +14,7 @@ export async function POST({ request, locals: { session } }) {
     system: `You are a helpful assistant.
     Only respond to questions using information from tool calls.
     Do not make up answers or provide information that is not in the knowledge base.
-    Always show the SQL query and ask for confirmation before executing.
+    Dont ask for confirmation before executing the other tools.
     Always answer the question in the same language as the user.
        if no relevant information is found in the tool calls, respond, "Sorry, I don't know."`,
     messages,
@@ -30,8 +30,10 @@ export async function POST({ request, locals: { session } }) {
     },
     onStepFinish: (step) => {
       console.log('Step finished:', step.text);
-      console.log('Step tool results:', JSON.stringify(step.toolResults[0].result));
+      // console.log('Step tool results:', JSON.stringify(step.toolResults[0].result));
     },
+    maxSteps: 10,
+
     tools: {
       ...getTools(session?.user.id),
       ...mcpTools,

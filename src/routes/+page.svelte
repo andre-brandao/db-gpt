@@ -1,15 +1,21 @@
 <script lang="ts">
-	import SvelteMarkdown from 'svelte-markdown';
-	import Code from '$lib/client/components/Chat/Code.svelte';
-	import Tool from '$lib/client/components/Chat/Tool.svelte';
+	// import SvelteMarkdown from 'svelte-markdown';
+	// import Code from '$lib/client/components/Chat/Code.svelte';
+	// import Tool from '$lib/client/components/Chat/Tool.svelte';
+	// import Attachment from '$lib/client/components/Chat/Attachment.svelte';
 
 	import { Chat } from '@ai-sdk/svelte';
-	import Attachment from '$lib/client/components/Chat/Attachment.svelte';
+	import Message from '$lib/client/components/Chat/Message.svelte';
 
 	const chat = new Chat({
-		maxSteps: 5
+		maxSteps: 5,
+		onFinish(message, options) {
+			console.log(message);
+			console.log(options);
+			scrollToBottom();
+		}
 	});
-
+	// chat.
 	// For auto-scrolling to bottom of chat
 	let chatContainer: HTMLDivElement | undefined = $state();
 
@@ -17,13 +23,6 @@
 		if (!chatContainer) return;
 		chatContainer.scrollTop = chatContainer.scrollHeight;
 	}
-
-	// // Auto-scroll when new messages arrive
-	// $effect(() => {
-	//   if (chat.messages.length > 0) {
-	// 	setTimeout(scrollToBottom, 100);
-	//   }
-	// });
 </script>
 
 <main class="bg-base-200 flex h-[90vh] flex-col p-4 md:p-6">
@@ -37,25 +36,6 @@
 
 			{chat.id}
 			{chat.status}
-
-			{#if chat.error}
-				<div role="alert" class="alert alert-error">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-6 w-6 shrink-0 stroke-current"
-						fill="none"
-						viewBox="0 0 24 24"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-						/>
-					</svg>
-					<span>{chat.error.name} - {chat.error.message}</span>
-				</div>
-			{/if}
 		</div>
 
 		<!-- Chat message area -->
@@ -69,7 +49,8 @@
 				</div>
 			{:else}
 				{#each chat.messages as message (message.id)}
-					<div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
+					<Message {...message} />
+					<!-- <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
 						<div
 							class="max-w-3/4 {message.role === 'user'
 								? 'bg-primary text-primary-content rounded-tl-lg rounded-tr-lg rounded-bl-lg'
@@ -81,6 +62,7 @@
 										<SvelteMarkdown
 											source={message.content}
 											renderers={{
+												// @ts-expect-error it works
 												code: Code
 											}}
 										/>
@@ -102,8 +84,28 @@
 								{/each}
 							{/each}
 						</div>
-					</div>
+					</div> -->
 				{/each}
+
+				{#if chat.error}
+					<div role="alert" class="alert alert-error">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-6 w-6 shrink-0 stroke-current"
+							fill="none"
+							viewBox="0 0 24 24"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+							/>
+						</svg>
+						<span>{chat.error.name} - {chat.error.message}</span>
+						<button class="btn btn-error btn-ghost" onclick={() => chat.reload({})}>Retry</button>
+					</div>
+				{/if}
 			{/if}
 		</div>
 
@@ -112,17 +114,29 @@
 			<form onsubmit={chat.handleSubmit} class="flex space-x-2">
 				<input
 					bind:value={chat.input}
+					disabled={chat.status !== 'ready'}
 					placeholder="Type your message here..."
 					class="input input-bordered focus:ring-primary flex-1 rounded-full focus:border-transparent focus:ring-2 focus:outline-none"
 				/>
-				<button
-					type="submit"
-					class="btn btn-primary btn-circle text-primary-content flex items-center justify-center"
-					disabled={!chat.input || chat.status === 'streaming' || chat.status === 'submitted'}
-				>
-					{#if chat.status === 'streaming'}
-						<span class="loading loading-spinner loading-sm"></span>
-					{:else}
+				{#if chat.status === 'streaming' || chat.status === 'submitted'}
+					<button
+						class="btn btn-primary btn-circle text-primary-content flex items-center justify-center"
+						onclick={chat.stop}
+						aria-label="Stop Chat"
+					>
+						{#if chat.status === 'submitted'}
+							<span class="loading loading-spinner loading-sm"></span>
+						{:else}
+							Stop
+						{/if}
+					</button>
+				{:else}
+					<button
+						type="submit"
+						aria-label="Send Message"
+						class="btn btn-primary btn-circle text-primary-content flex items-center justify-center"
+						disabled={!chat.input}
+					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							class="h-5 w-5"
@@ -137,8 +151,8 @@
 								d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
 							/>
 						</svg>
-					{/if}
-				</button>
+					</button>
+				{/if}
 			</form>
 		</div>
 	</div>

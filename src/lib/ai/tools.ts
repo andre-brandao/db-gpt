@@ -13,7 +13,7 @@ export const pgMcpClient = (dbURL: string) => createMCPClient({
       DATABASE_URL: dbURL,
     }
   }),
-});
+})
 // const mcpClient = await createMCPClient({
 //   transport: {
 //     type: 'sse',
