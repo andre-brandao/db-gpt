@@ -40,5 +40,19 @@ export async function POST({ request, locals: { session } }) {
     }
   });
   // console.log('Streaming response:', result.);
-  return result.toDataStreamResponse();
+  return result.toDataStreamResponse({
+    getErrorMessage(err) {
+      if (err == null) {
+        return "Erro Desconhecido"
+      }
+      if (typeof err === "string") {
+        return err
+      }
+
+      if (err instanceof Error) {
+        return err.message
+      }
+
+      return 2
+  });
 }

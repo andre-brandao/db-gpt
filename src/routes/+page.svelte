@@ -9,14 +9,21 @@
 
 	const chat = new Chat({
 		maxSteps: 5,
-		onFinish(message, options) {
-			console.log(message);
-			console.log(options);
+		onFinish(message, { usage, finishReason }) {
+			console.log('Finished streaming message:', message);
+			console.log('Token Usage:', usage);
+			console.log('Finish Reason', finishReason);
+
 			scrollToBottom();
+		},
+		onError(err) {
+			console.error('An error ocurred', err);
+		},
+		onResponse(resp) {
+			console.log('Received HTTP response:', resp);
 		}
 	});
-	// chat.
-	// For auto-scrolling to bottom of chat
+
 	let chatContainer: HTMLDivElement | undefined = $state();
 
 	function scrollToBottom() {
@@ -25,7 +32,7 @@
 	}
 </script>
 
-<main class="bg-base-200 flex h-[90vh] flex-col p-4 md:p-6">
+<main class="bg-base-200 flex h-[82vh] flex-col p-4 md:p-6">
 	<div
 		class="bg-base-100 mx-auto flex w-full max-w-4xl flex-1 flex-col overflow-hidden rounded-lg shadow-lg"
 	>
@@ -50,41 +57,6 @@
 			{:else}
 				{#each chat.messages as message (message.id)}
 					<Message {...message} />
-					<!-- <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
-						<div
-							class="max-w-3/4 {message.role === 'user'
-								? 'bg-primary text-primary-content rounded-tl-lg rounded-tr-lg rounded-bl-lg'
-								: 'bg-base-200 text-base-content rounded-tl-lg rounded-tr-lg rounded-br-lg'} p-3 shadow-sm"
-						>
-							{#each message.parts as part, partIndex (partIndex)}
-								{#if part.type === 'text'}
-									<div class="">
-										<SvelteMarkdown
-											source={message.content}
-											renderers={{
-												// @ts-expect-error it works
-												code: Code
-											}}
-										/>
-									</div>
-								{:else if part.type === 'reasoning'}
-									<div class="italic">
-										Reasoning: {part.reasoning}
-									</div>
-								{:else if part.type === 'file'}
-									<div>
-										File: {part.mimeType}
-									</div>
-								{:else if part.type === 'tool-invocation'}
-									<Tool {...part.toolInvocation} />
-								{/if}
-
-								{#each message?.experimental_attachments ?? [] as attachment (attachment)}
-									<Attachment {attachment} />
-								{/each}
-							{/each}
-						</div>
-					</div> -->
 				{/each}
 
 				{#if chat.error}
