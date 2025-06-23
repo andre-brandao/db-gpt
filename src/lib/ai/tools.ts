@@ -27,7 +27,7 @@ export const pgMcpClient = (dbURL: string) => createMCPClient({
 // });
 
 export const getTools = (userId?: string) => ({
-  addResource: tool({
+  "Add_Resource": tool({
     description: `add a resource to your knowledge base.
       If the user provides a random piece of knowledge unprompted, use this tool without asking for confirmation.`,
     parameters: z.object({
@@ -43,11 +43,75 @@ export const getTools = (userId?: string) => ({
       source: "user_conversation"
     })
   }),
-  getInformation: tool({
+  "Retrieve_Information": tool({
     description: `get information from your knowledge base to answer questions.`,
     parameters: z.object({
       question: z.string().describe('the users question')
     }),
     execute: async ({ question }) => await findRelevantContent(question)
-  })
+  }),
+  "Retrieve_Svelte_and_SvelteKig_Abridged_Docs": tool({
+    description: `A shorter version of the Svelte and SvelteKit documentation, with examples and non-essential content removed`,
+    parameters: z.object({}).describe('no parameters required'),
+    execute: async () => {
+      return (await fetch("https://svelte.dev/llms-medium.txt")).text()
+    }
+  }),
+
+  "Retrieve_Svelte_and_SvelteKit_Compressed_Docs": tool({
+    description: `A minimal version of the Svelte and SvelteKit documentation, with many examples and non-essential content removed`,
+    parameters: z.object({}).describe('no parameters required'),
+    execute: async () => {
+      return (await fetch("https://svelte.dev/llms-small.txt")).text()
+    }
+  }),
+  "Retrieve_Svelte_and_SvelteKit_Complete_Docs": tool({
+    description: `The complete Svelte and SvelteKit documentation including all examples and additional content`,
+    parameters: z.object({}).describe('no parameters required'),
+    execute: async () => {
+      return (await fetch("https://svelte.dev/llms-full.txt")).text()
+    }
+  }),
+  "Retrieve_Svelte_Documentation": tool({
+    description: `The developer documentation for Svelte.`,
+    parameters: z.object({}).describe('no parameters required'),
+    execute: async () => {
+      return (await fetch("https://svelte.dev/docs/svelte/llms.txt")).text()
+    }
+  }),
+
+  "Retrieve_SvelteKit_Documentation": tool({
+    description: `The developer documentation for SvelteKit.`,
+    parameters: z.object({}).describe('no parameters required'),
+    execute: async () => {
+      return (await fetch("https://svelte.dev/docs/kit/llms.txt")).text()
+    }
+  }),
+
 })
+
+/**
+# Svelte Documentation for LLMs
+
+> Svelte is a UI framework that uses a compiler to let you write breathtakingly concise components that do minimal work in the browser, using languages you already know — HTML, CSS and JavaScript.
+
+## Documentation Sets
+
+- [Abridged documentation](https://svelte.dev/llms-medium.txt): A shorter version of the Svelte and SvelteKit documentation, with examples and non-essential content removed
+- [Compressed documentation](https://svelte.dev/llms-small.txt): A minimal version of the Svelte and SvelteKit documentation, with many examples and non-essential content removed
+- [Complete documentation](https://svelte.dev/llms-full.txt): The complete Svelte and SvelteKit documentation including all examples and additional content
+
+## Individual Package Documentation
+
+- [Svelte documentation](https://svelte.dev/docs/svelte/llms.txt): This is the developer documentation for Svelte.
+- [SvelteKit documentation](https://svelte.dev/docs/kit/llms.txt): This is the developer documentation for SvelteKit.
+- [the Svelte CLI documentation](https://svelte.dev/docs/cli/llms.txt): This is the developer documentation for the Svelte CLI.
+
+## Notes
+
+- The abridged and compressed documentation excludes legacy compatibility notes, detailed examples, and supplementary information
+- The complete documentation includes all content from the official documentation
+- Package-specific documentation files contain only the content relevant to that package
+- The content is automatically generated from the same source as the official documentation
+
+*/

@@ -1,9 +1,14 @@
 <script lang="ts">
 	import SvelteMarkdown from 'svelte-markdown';
-	import Code from '$lib/Code.svelte';
-	import { Chat } from '@ai-sdk/svelte';
+	import Code from '$lib/client/components/Chat/Code.svelte';
+	import Tool from '$lib/client/components/Chat/Tool.svelte';
 
-	const chat = new Chat();
+	import { Chat } from '@ai-sdk/svelte';
+	import Attachment from '$lib/client/components/Chat/Attachment.svelte';
+
+	const chat = new Chat({
+		maxSteps: 5
+	});
 
 	// For auto-scrolling to bottom of chat
 	let chatContainer: HTMLDivElement | undefined = $state();
@@ -29,6 +34,28 @@
 		<div class="bg-base-100 rounded-t-lg border-b p-4 shadow-sm">
 			<h1 class="text-xl font-semibold">DB GPT</h1>
 			<p class="text-sm opacity-70">Ask me anything!</p>
+
+			{chat.id}
+			{chat.status}
+
+			{#if chat.error}
+				<div role="alert" class="alert alert-error">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-6 w-6 shrink-0 stroke-current"
+						fill="none"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+						/>
+					</svg>
+					<span>{chat.error.name} - {chat.error.message}</span>
+				</div>
+			{/if}
 		</div>
 
 		<!-- Chat message area -->
@@ -48,18 +75,32 @@
 								? 'bg-primary text-primary-content rounded-tl-lg rounded-tr-lg rounded-bl-lg'
 								: 'bg-base-200 text-base-content rounded-tl-lg rounded-tr-lg rounded-br-lg'} p-3 shadow-sm"
 						>
-							{#if message.role === 'assistant'}
-								<div class="prose prose-sm max-w-none">
-									<SvelteMarkdown
-										source={message.content}
-										renderers={{
-											code: Code
-										}}
-									/>
-								</div>
-							{:else}
-								<p class="break-words whitespace-pre-wrap">{message.content}</p>
-							{/if}
+							{#each message.parts as part, partIndex (partIndex)}
+								{#if part.type === 'text'}
+									<div class="">
+										<SvelteMarkdown
+											source={message.content}
+											renderers={{
+												code: Code
+											}}
+										/>
+									</div>
+								{:else if part.type === 'reasoning'}
+									<div class="italic">
+										Reasoning: {part.reasoning}
+									</div>
+								{:else if part.type === 'file'}
+									<div>
+										File: {part.mimeType}
+									</div>
+								{:else if part.type === 'tool-invocation'}
+									<Tool {...part.toolInvocation} />
+								{/if}
+
+								{#each message?.experimental_attachments ?? [] as attachment (attachment)}
+									<Attachment {attachment} />
+								{/each}
+							{/each}
 						</div>
 					</div>
 				{/each}
@@ -77,7 +118,7 @@
 				<button
 					type="submit"
 					class="btn btn-primary btn-circle text-primary-content flex items-center justify-center"
-					disabled={!chat.input || chat.status === 'streaming'}
+					disabled={!chat.input || chat.status === 'streaming' || chat.status === 'submitted'}
 				>
 					{#if chat.status === 'streaming'}
 						<span class="loading loading-spinner loading-sm"></span>

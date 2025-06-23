@@ -185,6 +185,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         ],
       };
     } catch (error) {
+      console.error("Error executing query:", error);
       throw error;
     } finally {
       client

@@ -26,7 +26,7 @@ export const openai = createOpenAI({
 })
 
 export const embeddingModel = openai.embedding('text-embedding-ada-002', {
-  dimensions: 1024,
+  // dimensions: ,
 })
 
 export const model = openai("gpt-4")

@@ -58,5 +58,5 @@ export const insertResourceSchema = createSelectSchema(resources)
   });
 
 // Type for resources - used to type API request params and within Components
-// @ts-expect-error
+// @ts-expect-error foo
 export type NewResourceParams = z.infer<typeof insertResourceSchema>;
