@@ -1,5 +1,5 @@
 
-import { tool, experimental_createMCPClient as createMCPClient } from 'ai';
+import { tool, experimental_createMCPClient as createMCPClient, } from 'ai';
 import { createResource } from '$lib/server/db/actions/resources';
 import { findRelevantContent } from '$lib/ai/embedding';
 import { z } from 'zod';
@@ -50,6 +50,17 @@ export const getTools = (userId?: string) => ({
     }),
     execute: async ({ question }) => await findRelevantContent(question)
   }),
+  // "DuckDuckGo_Search": tool({
+  //   description: `Search the web using DuckDuckGo. Use this tool to gather information that is not available in your knowledge base.`,
+  //   parameters: z.object({
+  //     query: z.string().describe('the search query')
+  //   }),
+  //   execute: async ({ query }) => {
+  //     const res = await fetch(`https://api.duckduckgo.com/?q=${query}&format=json&pretty=1`);
+  //     const data = await res.json();
+  //     return JSON.stringify(data);
+  //   }
+  // }),
   "Retrieve_Svelte_and_SvelteKig_Abridged_Docs": tool({
     description: `A shorter version of the Svelte and SvelteKit documentation, with examples and non-essential content removed`,
     parameters: z.object({}).describe('no parameters required'),
@@ -58,13 +69,13 @@ export const getTools = (userId?: string) => ({
     }
   }),
 
-  "Retrieve_Svelte_and_SvelteKit_Compressed_Docs": tool({
-    description: `A minimal version of the Svelte and SvelteKit documentation, with many examples and non-essential content removed`,
-    parameters: z.object({}).describe('no parameters required'),
-    execute: async () => {
-      return (await fetch("https://svelte.dev/llms-small.txt")).text()
-    }
-  }),
+  // "Retrieve_Svelte_and_SvelteKit_Compressed_Docs": tool({
+  //   description: `A minimal version of the Svelte and SvelteKit documentation, with many examples and non-essential content removed`,
+  //   parameters: z.object({}).describe('no parameters required'),
+  //   execute: async () => {
+  //     return (await fetch("https://svelte.dev/llms-small.txt")).text()
+  //   }
+  // }),
   // "Retrieve_Svelte_and_SvelteKit_Complete_Docs": tool({
   //   description: `The complete Svelte and SvelteKit documentation including all examples and additional content`,
   //   parameters: z.object({}).describe('no parameters required'),
@@ -72,21 +83,21 @@ export const getTools = (userId?: string) => ({
   //     return (await fetch("https://svelte.dev/llms-full.txt")).text()
   //   }
   // }),
-  "Retrieve_Svelte_Documentation": tool({
-    description: `The developer documentation for Svelte.`,
-    parameters: z.object({}).describe('no parameters required'),
-    execute: async () => {
-      return (await fetch("https://svelte.dev/docs/svelte/llms.txt")).text()
-    }
-  }),
+  // "Retrieve_Svelte_Documentation": tool({
+  //   description: `The developer documentation for Svelte.`,
+  //   parameters: z.object({}).describe('no parameters required'),
+  //   execute: async () => {
+  //     return (await fetch("https://svelte.dev/docs/svelte/llms.txt")).text()
+  //   }
+  // }),
 
-  "Retrieve_SvelteKit_Documentation": tool({
-    description: `The developer documentation for SvelteKit.`,
-    parameters: z.object({}).describe('no parameters required'),
-    execute: async () => {
-      return (await fetch("https://svelte.dev/docs/kit/llms.txt")).text()
-    }
-  }),
+  // "Retrieve_SvelteKit_Documentation": tool({
+  //   description: `The developer documentation for SvelteKit.`,
+  //   parameters: z.object({}).describe('no parameters required'),
+  //   execute: async () => {
+  //     return (await fetch("https://svelte.dev/docs/kit/llms.txt")).text()
+  //   }
+  // }),
 
 })
 

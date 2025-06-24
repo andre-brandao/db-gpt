@@ -3,17 +3,22 @@
 	// import Code from '$lib/client/components/Chat/Code.svelte';
 	// import Tool from '$lib/client/components/Chat/Tool.svelte';
 	// import Attachment from '$lib/client/components/Chat/Attachment.svelte';
+	import sampleDBS from '$lib/samples/data.json';
 
 	import { Chat } from '@ai-sdk/svelte';
 	import Message from '$lib/client/components/Chat/Message.svelte';
+	import { setContext } from 'svelte';
 
+	// let selectedDb: keyof typeof sampleDBS | undefined = $state('netflix');
+	let selectedDb = $state(setContext('db_id', 'netflix' as keyof typeof sampleDBS));
+	let selectedInfo = $derived(sampleDBS[selectedDb]);
 	const chat = new Chat({
 		maxSteps: 5,
 		onFinish(message, { usage, finishReason }) {
 			console.log('Finished streaming message:', message);
 			console.log('Token Usage:', usage);
 			console.log('Finish Reason', finishReason);
-
+			// console.log(chat.);
 			scrollToBottom();
 		},
 		onError(err) {
@@ -30,6 +35,7 @@
 		if (!chatContainer) return;
 		chatContainer.scrollTop = chatContainer.scrollHeight;
 	}
+	$inspect(chat.data).with(console.log);
 </script>
 
 <main class="bg-base-200 flex h-[82vh] flex-col p-4 md:p-6">
@@ -37,12 +43,40 @@
 		class="bg-base-100 mx-auto flex w-full max-w-4xl flex-1 flex-col overflow-hidden rounded-lg shadow-lg"
 	>
 		<!-- Chat header -->
-		<div class="bg-base-100 rounded-t-lg border-b p-4 shadow-sm">
-			<h1 class="text-xl font-semibold">DB GPT</h1>
-			<p class="text-sm opacity-70">Ask me anything!</p>
+		<div class="bg-base-100 flex items-center justify-between rounded-t-lg border-b p-4 shadow-sm">
+			<div>
+				<h1 class="text-xl font-semibold">DB GPT</h1>
+				<p class="text-sm opacity-70">Ask me anything!</p>
+				<div class="stats mt-2 shadow">
+					<div class="stat">
+						<div class="stat-title">Chat ID</div>
+						<div class="stat-value">{chat.id?.slice(0, 8)}</div>
+						<div class="stat-desc">Status: {chat.status}</div>
+					</div>
+				</div>
+			</div>
 
-			{chat.id}
-			{chat.status}
+			<div class="text-right">
+				<select class="select select-bordered" bind:value={selectedDb}>
+					{#each Object.keys(sampleDBS) as key (key)}
+						<option value={key}>{key}</option>
+					{/each}
+				</select>
+				{#if selectedInfo}
+					<div class="form-control w-full max-w-xs">
+						<label class="label">
+							<span class="label-text">Selected Database</span>
+						</label>
+						<label class="label">
+							{#if selectedInfo}
+								<span class="label-text-alt">{selectedInfo.label} ({selectedInfo.type})</span>
+							{/if}
+						</label>
+					</div>
+				{:else}
+					<p class="mt-2 text-sm text-red-500">No database selected</p>
+				{/if}
+			</div>
 		</div>
 
 		<!-- Chat message area -->
@@ -83,7 +117,15 @@
 
 		<!-- Input area -->
 		<div class="bg-base-100 rounded-b-lg border-t p-4">
-			<form onsubmit={chat.handleSubmit} class="flex space-x-2">
+			<form
+				onsubmit={(e) =>
+					chat.handleSubmit(e, {
+						body: {
+							db_id: selectedDb
+						}
+					})}
+				class="flex space-x-2"
+			>
 				<input
 					bind:value={chat.input}
 					disabled={chat.status !== 'ready'}

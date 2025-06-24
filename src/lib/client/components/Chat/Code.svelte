@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { getContext } from 'svelte';
+
 	// import type { Snippet } from 'svelte';
 	import Table from './Table.svelte';
 
@@ -7,6 +9,8 @@
 		lang?: string;
 		text?: string;
 	}
+
+	const db_id = getContext('db_id') as string;
 
 	const { lang, text, ...rest }: Props = $props();
 	console.log($state.snapshot(rest));
@@ -25,7 +29,7 @@
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ query: text })
+				body: JSON.stringify({ query: text, db_id })
 			});
 
 			if (!resp.ok) {

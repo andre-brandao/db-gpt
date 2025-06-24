@@ -7,7 +7,7 @@
 	let { children } = $props();
 
 	const session = authClient.useSession();
-	let drawerOpen = false;
+	let drawerOpen = $state(false);
 
 	function toggleDrawer() {
 		drawerOpen = !drawerOpen;

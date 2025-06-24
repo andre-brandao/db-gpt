@@ -1,0 +1,17 @@
+{
+  "netflix": {
+    "label": "Netflix",
+    "type": "pg",
+    "db_url": "postgresql://postgres:tTAhQBMETvSFKQWAsXfMAxPsTEdqNtFu@metro.proxy.rlwy.net:34803/netflix"
+  },
+  "periodic_table": {
+    "label": "Periodic Table",
+    "type": "pg",
+    "db_url": "postgresql://postgres:tTAhQBMETvSFKQWAsXfMAxPsTEdqNtFu@metro.proxy.rlwy.net:34803/periodic_table"
+  },
+  "happiness_index": {
+    "label": "Happiness Index",
+    "type": "pg",
+    "db_url": "postgresql://postgres:tTAhQBMETvSFKQWAsXfMAxPsTEdqNtFu@metro.proxy.rlwy.net:34803/world_happiness"
+  }
+}
