@@ -65,13 +65,13 @@ export const getTools = (userId?: string) => ({
       return (await fetch("https://svelte.dev/llms-small.txt")).text()
     }
   }),
-  "Retrieve_Svelte_and_SvelteKit_Complete_Docs": tool({
-    description: `The complete Svelte and SvelteKit documentation including all examples and additional content`,
-    parameters: z.object({}).describe('no parameters required'),
-    execute: async () => {
-      return (await fetch("https://svelte.dev/llms-full.txt")).text()
-    }
-  }),
+  // "Retrieve_Svelte_and_SvelteKit_Complete_Docs": tool({
+  //   description: `The complete Svelte and SvelteKit documentation including all examples and additional content`,
+  //   parameters: z.object({}).describe('no parameters required'),
+  //   execute: async () => {
+  //     return (await fetch("https://svelte.dev/llms-full.txt")).text()
+  //   }
+  // }),
   "Retrieve_Svelte_Documentation": tool({
     description: `The developer documentation for Svelte.`,
     parameters: z.object({}).describe('no parameters required'),

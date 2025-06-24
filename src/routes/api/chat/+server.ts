@@ -15,6 +15,7 @@ export async function POST({ request, locals: { session } }) {
     Only respond to questions using information from tool calls.
     Do not make up answers or provide information that is not in the knowledge base.
     Dont ask for confirmation before executing the other tools.
+    Svelte has separe tools, so you can use them to answer questions about Svelte and SvelteKit instead of the knowledge base.
     Always answer the question in the same language as the user.
        if no relevant information is found in the tool calls, respond, "Sorry, I don't know."`,
     messages,
@@ -33,7 +34,7 @@ export async function POST({ request, locals: { session } }) {
       // console.log('Step tool results:', JSON.stringify(step.toolResults[0].result));
     },
     maxSteps: 10,
-
+    maxRetries:1,
     tools: {
       ...getTools(session?.user.id),
       ...mcpTools,
@@ -53,6 +54,7 @@ export async function POST({ request, locals: { session } }) {
         return err.message
       }
 
-      return 2
+      return "Erro Desconhecido"
+    },
   });
 }

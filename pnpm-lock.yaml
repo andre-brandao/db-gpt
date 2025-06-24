@@ -20,6 +20,9 @@ importers:
       '@ai-sdk/svelte':
         specifier: ^2.1.12
         version: 2.1.12(svelte@5.33.14)(zod@3.25.61)
+      '@ai-sdk/vercel':
+        specifier: ^0.0.1
+        version: 0.0.1(zod@3.25.61)
       '@aws-sdk/credential-providers':
         specifier: ^3.828.0
         version: 3.828.0
@@ -147,6 +150,12 @@ packages:
     peerDependencies:
       zod: ^3.0.0
 
+  '@ai-sdk/openai-compatible@0.2.14':
+    resolution: {integrity: sha512-icjObfMCHKSIbywijaoLdZ1nSnuRnWgMEMLgwoxPJgxsUHMx0aVORnsLUid4SPtdhHI3X2masrt6iaEQLvOSFw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
+
   '@ai-sdk/openai@1.3.22':
     resolution: {integrity: sha512-QwA+2EkG0QyjVR+7h6FE7iOu2ivNqAVMm9UJZkVxxTk5OIq5fFJDTEI/zICEMuHImTTXR2JjsL6EirJ28Jc4cw==}
     engines: {node: '>=18'}
@@ -187,6 +196,12 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.23.8
+
+  '@ai-sdk/vercel@0.0.1':
+    resolution: {integrity: sha512-hHDZotTYVpmNyiSiWySSv/XbSjkL9exmKkBR7FwR1zp41ml+LV6WBlfwatBWZ5m22hSSDrztx4abvvd/MFF0yg==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -3110,6 +3125,12 @@ snapshots:
       '@ai-sdk/provider-utils': 2.2.8(zod@3.25.61)
       zod: 3.25.61
 
+  '@ai-sdk/openai-compatible@0.2.14(zod@3.25.61)':
+    dependencies:
+      '@ai-sdk/provider': 1.1.3
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.61)
+      zod: 3.25.61
+
   '@ai-sdk/openai@1.3.22(zod@3.25.61)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
@@ -3151,6 +3172,13 @@ snapshots:
       '@ai-sdk/provider-utils': 2.2.8(zod@3.25.61)
       zod: 3.25.61
       zod-to-json-schema: 3.24.5(zod@3.25.61)
+
+  '@ai-sdk/vercel@0.0.1(zod@3.25.61)':
+    dependencies:
+      '@ai-sdk/openai-compatible': 0.2.14(zod@3.25.61)
+      '@ai-sdk/provider': 1.1.3
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.61)
+      zod: 3.25.61
 
   '@ampproject/remapping@2.3.0':
     dependencies:

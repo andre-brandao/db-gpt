@@ -1,10 +1,16 @@
-import { createOpenAI } from '@ai-sdk/openai';
-// import { createAnthropic } from '@ai-sdk/anthropic';
-
 import {
   OPENAI_API_KEY,
+  V0_API_KEY,
   // ANTHROPIC_API_KEY,
 } from '$env/static/private';
+import { createOpenAI } from '@ai-sdk/openai';
+import { createVercel } from '@ai-sdk/vercel';
+
+const vercel = createVercel({
+  apiKey: V0_API_KEY
+});
+// import { createAnthropic } from '@ai-sdk/anthropic';
+
 
 // import { createAmazonBedrock } from '@ai-sdk/amazon-bedrock';
 // import { fromNodeProviderChain } from '@aws-sdk/credential-providers';
@@ -30,3 +36,5 @@ export const embeddingModel = openai.embedding('text-embedding-ada-002', {
 })
 
 export const model = openai("gpt-4")
+
+export const frontEndModel = vercel("v0-1.0-md")
