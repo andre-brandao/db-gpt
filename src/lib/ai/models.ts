@@ -7,7 +7,7 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { createVercel } from '@ai-sdk/vercel';
 
 const vercel = createVercel({
-  apiKey: V0_API_KEY
+  apiKey: V0_API_KEY || ""
 });
 // import { createAnthropic } from '@ai-sdk/anthropic';
 
