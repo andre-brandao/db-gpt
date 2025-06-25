@@ -22,7 +22,7 @@
 	<input id="mobile-drawer" type="checkbox" class="drawer-toggle" bind:checked={drawerOpen} />
 	<div class="drawer-content bg-base-200 min-h-screen">
 		<!-- Navigation -->
-		<nav class="bg-base-100 text-base-content shadow-lg">
+		<nav class="bg-primary-content text-base-content shadow-lg absolute w-full">
 			<div class="container mx-auto px-4">
 				<div class="navbar">
 					<div class="navbar-start">
@@ -36,21 +36,6 @@
 								alt="RAG"
 							/>
 						</a>
-					</div>
-
-					<!-- Navigation Links -->
-					<div class="navbar-center hidden md:flex">
-						<div class="tabs tabs-boxed bg-transparent">
-							<a href="/chat" class="tab tab-lg hover:tab-active transition-all duration-200"
-								>Chat</a
-							>
-							<a href="/dashboard" class="tab tab-lg hover:tab-active transition-all duration-200"
-								>Dashboard</a
-							>
-							<a href="/resources" class="tab tab-lg hover:tab-active transition-all duration-200"
-								>Resources</a
-							>
-						</div>
 					</div>
 
 					<!-- User Menu -->
@@ -97,7 +82,7 @@
 							</div>
 						{:else}
 							<button
-								class="btn btn-secondary glass"
+								class="btn btn-secondary-content glass border-base-300"
 								onclick={async () => {
 									await authClient.signIn.social({
 										provider: 'github'
@@ -150,16 +135,16 @@
 		</nav>
 
 		<!-- Main Content -->
-		<main class="container mx-auto px-4 py-8">
+		<div class="w-full h-full">
 			{@render children()}
-		</main>
+		</div>
 
 		<!-- Footer -->
-		<footer class="footer footer-center bg-base-300 text-base-content mt-auto p-4">
+		<!-- <footer class="footer footer-center bg-base-300 text-base-content mt-auto p-4">
 			<aside>
 				<p>Copyright © {new Date().getFullYear()} - RAG Platform</p>
 			</aside>
-		</footer>
+		</footer> -->
 	</div>
 
 	<div class="drawer-side">

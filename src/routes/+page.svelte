@@ -32,18 +32,10 @@
 	}
 </script>
 
-<main class="bg-base-200 flex h-[82vh] flex-col p-4 md:p-6">
+<main class="bg-base-200 flex h-full flex-col ">
 	<div
-		class="bg-base-100 mx-auto flex w-full max-w-4xl flex-1 flex-col overflow-hidden rounded-lg shadow-lg"
+		class="bg-base-100 flex w-full flex-1 flex-col overflow-hidden rounded-lg shadow-lg"
 	>
-		<!-- Chat header -->
-		<div class="bg-base-100 rounded-t-lg border-b p-4 shadow-sm">
-			<h1 class="text-xl font-semibold">DB GPT</h1>
-			<p class="text-sm opacity-70">Ask me anything!</p>
-
-			{chat.id}
-			{chat.status}
-		</div>
 
 		<!-- Chat message area -->
 		<div class="flex-1 space-y-4 overflow-y-auto p-4" bind:this={chatContainer}>
