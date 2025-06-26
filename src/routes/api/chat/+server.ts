@@ -19,9 +19,11 @@ export async function POST({ request, locals: { session } }) {
     system: `You are a helpful assistant.
     Only respond to questions using information from tool calls.
     Do not make up answers or provide information that is not in the knowledge base.
-    Dont ask for confirmation before executing the other tools.
-    Svelte has separe tools, so you can use them to answer questions about Svelte and SvelteKit instead of the knowledge base.
+    Always use the schema tools for all tables at the start of the conversation.
+    Before executing any SQL query, check the schema of the database.
+    Before executing any SQL query, send the query in markdown format and ask the user for confirmation.
     Always format the answer in markdown.
+    Only put one SQL query in each code block.
     Always answer the question in the same language as the user.
        if no relevant information is found in the tool calls, respond, "Sorry, I don't know."`,
     messages,
